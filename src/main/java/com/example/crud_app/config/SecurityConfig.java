@@ -47,8 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/all").hasRole("admin")
                         .requestMatchers("/api/users/me", "/api/users/**").authenticated() // Allow authenticated users
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(), BasicAuthenticationFilter.class);
 
         return http.build();
@@ -56,7 +55,8 @@ public class SecurityConfig {
 
     public class JwtAuthenticationFilter extends OncePerRequestFilter {
         @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                FilterChain filterChain)
                 throws ServletException, IOException {
             String authorizationHeader = request.getHeader("Authorization");
 
@@ -77,8 +77,7 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 email,
                                 null,
-                                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
-                        );
+                                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
                         System.out.println("Setting authentication with authorities: " + authToken.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
@@ -98,7 +97,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedOrigins(
+                Arrays.asList("https://crud-app-frontend-beryl.vercel.app", "http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
